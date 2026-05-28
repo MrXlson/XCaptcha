@@ -1,5 +1,7 @@
 package me.xverse.captcha;
 
+import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,7 +15,10 @@ import java.util.UUID;
 public class MiningListener implements Listener {
 
     private final HashMap<UUID, Integer> mined = new HashMap<>();
+
     private final HashMap<UUID, Integer> nextCaptcha = new HashMap<>();
+
+    private final HashMap<UUID, Long> cooldown = new HashMap<>();
 
     private final Random random = new Random();
 
@@ -25,6 +30,12 @@ public class MiningListener implements Listener {
         if(!config.getBoolean("captcha.enabled")) return;
 
         Player p = e.getPlayer();
+
+        if(p.hasPermission("xcaptcha.bypass")) return;
+
+        if(p.getGameMode() == GameMode.CREATIVE) return;
+
+        if(p.getGameMode() == GameMode.SPECTATOR) return;
 
         UUID uuid = p.getUniqueId();
 
@@ -38,6 +49,21 @@ public class MiningListener implements Listener {
             return;
         }
 
+        Material block = e.getBlock().getType();
+
+        if(config.getStringList("captcha.ignored-blocks").contains(block.name())) {
+            return;
+        }
+
+        if(cooldown.containsKey(uuid)) {
+
+            long end = cooldown.get(uuid);
+
+            if(System.currentTimeMillis() < end) {
+                return;
+            }
+        }
+
         int amount = mined.getOrDefault(uuid, 0) + 1;
 
         mined.put(uuid, amount);
@@ -45,6 +71,7 @@ public class MiningListener implements Listener {
         if(!nextCaptcha.containsKey(uuid)) {
 
             int min = config.getInt("captcha.min-blocks");
+
             int max = config.getInt("captcha.max-blocks");
 
             nextCaptcha.put(uuid, random.nextInt((max - min) + 1) + min);
@@ -57,11 +84,19 @@ public class MiningListener implements Listener {
             mined.put(uuid, 0);
 
             int min = config.getInt("captcha.min-blocks");
+
             int max = config.getInt("captcha.max-blocks");
 
             nextCaptcha.put(uuid, random.nextInt((max - min) + 1) + min);
 
             CaptchaGUI.openCaptcha(p);
+
+            int cooldownSeconds = config.getInt("captcha.success-cooldown");
+
+            cooldown.put(
+                    uuid,
+                    System.currentTimeMillis() + (cooldownSeconds * 1000L)
+            );
         }
     }
 }
