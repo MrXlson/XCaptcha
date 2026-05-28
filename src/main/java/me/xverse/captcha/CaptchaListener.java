@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -16,6 +17,8 @@ import java.util.UUID;
 public class CaptchaListener implements Listener {
 
     public static Set<UUID> captchaPlayers = new HashSet<>();
+
+    public static HashMap<UUID, Long> cooldown = new HashMap<>();
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
@@ -42,6 +45,13 @@ public class CaptchaListener implements Listener {
             captchaPlayers.remove(p.getUniqueId());
 
             p.closeInventory();
+
+            int cooldownSeconds = config.getInt("captcha.success-cooldown");
+
+            cooldown.put(
+                    p.getUniqueId(),
+                    System.currentTimeMillis() + (cooldownSeconds * 1000L)
+            );
 
             p.sendMessage(
                     config.getString("messages.success")
