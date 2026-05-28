@@ -11,6 +11,16 @@ captcha:
   min-blocks: 30
   max-blocks: 80
 
+  freeze-player: true
+
+  block-commands: true
+
+  timeout-seconds: 10
+
+  allowed-commands:
+    - msg
+    - r
+
   gui:
 
     size: 27
@@ -28,3 +38,7 @@ messages:
   fail: "&cNeprošel jsi CAPTCHA testem!"
 
   close: "&cZavřel jsi CAPTCHA!"
+
+  timeout: "&cVypršel čas na CAPTCHA!"
+
+  blocked-commands: "&cBěhem CAPTCHA nemůžeš používat commandy!"
