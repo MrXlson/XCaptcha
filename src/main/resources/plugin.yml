@@ -1,0 +1,5 @@
+name: XCaptcha
+version: 1.0
+main: me.xverse.captcha.Main
+api-version: '1.21'
+author: MrXlson
