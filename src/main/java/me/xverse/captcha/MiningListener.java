@@ -18,8 +18,6 @@ public class MiningListener implements Listener {
 
     private final HashMap<UUID, Integer> nextCaptcha = new HashMap<>();
 
-    private final HashMap<UUID, Long> cooldown = new HashMap<>();
-
     private final Random random = new Random();
 
     @EventHandler
@@ -55,9 +53,9 @@ public class MiningListener implements Listener {
             return;
         }
 
-        if(cooldown.containsKey(uuid)) {
+        if(CaptchaListener.cooldown.containsKey(uuid)) {
 
-            long end = cooldown.get(uuid);
+            long end = CaptchaListener.cooldown.get(uuid);
 
             if(System.currentTimeMillis() < end) {
                 return;
@@ -90,13 +88,6 @@ public class MiningListener implements Listener {
             nextCaptcha.put(uuid, random.nextInt((max - min) + 1) + min);
 
             CaptchaGUI.openCaptcha(p);
-
-            int cooldownSeconds = config.getInt("captcha.success-cooldown");
-
-            cooldown.put(
-                    uuid,
-                    System.currentTimeMillis() + (cooldownSeconds * 1000L)
-            );
         }
     }
 }
