@@ -11,6 +11,8 @@ captcha:
   min-blocks: 30
   max-blocks: 80
 
+  success-cooldown: 120
+
   freeze-player: true
 
   block-commands: true
@@ -20,6 +22,11 @@ captcha:
   allowed-commands:
     - msg
     - r
+
+  ignored-blocks:
+    - TORCH
+    - GRASS
+    - TALL_GRASS
 
   gui:
 
@@ -42,3 +49,7 @@ messages:
   timeout: "&cVypršel čas na CAPTCHA!"
 
   blocked-commands: "&cBěhem CAPTCHA nemůžeš používat commandy!"
+
+  already-open: "&cUž řešíš CAPTCHA!"
+
+  reload: "&aConfig byl reloadnut!"
