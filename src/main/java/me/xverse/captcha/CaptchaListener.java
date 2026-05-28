@@ -23,26 +23,25 @@ public class CaptchaListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent e) {
 
-        if(!(e.getWhoClicked() instanceof Player p)) return;
+        if (!(e.getWhoClicked() instanceof Player p)) return;
 
         FileConfiguration config = Main.getInstance().getConfig();
 
         String title = config.getString("captcha.gui.title")
                 .replace("&", "§");
 
-        if(!e.getView().getTitle().equals(title)) return;
+        if (!e.getView().getTitle().equals(title)) return;
 
         e.setCancelled(true);
 
-        if(e.getCurrentItem() == null) return;
+        if (e.getCurrentItem() == null) return;
 
         Material captcha = Material.valueOf(
                 config.getString("captcha.gui.captcha-material")
         );
 
-        if(e.getCurrentItem().getType() == captcha) {
+        if (e.getCurrentItem().getType() == captcha) {
 
-            // NEJDŘÍV odstranit z captcha listu
             captchaPlayers.remove(p.getUniqueId());
 
             int cooldownSeconds = config.getInt("captcha.success-cooldown");
@@ -57,10 +56,9 @@ public class CaptchaListener implements Listener {
                             .replace("&", "§")
             );
 
-            // AŽ POTOM zavřít inventory
             Bukkit.getScheduler().runTaskLater(
                     Main.getInstance(),
-                    p::closeInventory,
+                    () -> p.closeInventory(),
                     1L
             );
 
@@ -84,7 +82,7 @@ public class CaptchaListener implements Listener {
 
         Player p = (Player) e.getPlayer();
 
-        if(!captchaPlayers.contains(p.getUniqueId())) return;
+        if (!captchaPlayers.contains(p.getUniqueId())) return;
 
         FileConfiguration config = Main.getInstance().getConfig();
 
