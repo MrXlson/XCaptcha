@@ -13,5 +13,9 @@ commands:
     permission: xcaptcha.admin
 
 permissions:
+
   xcaptcha.admin:
+    default: op
+
+  xcaptcha.bypass:
     default: op
