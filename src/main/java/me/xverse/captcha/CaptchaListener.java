@@ -90,11 +90,11 @@ public class CaptchaListener implements Listener {
 
                     if (captchaPlayers.contains(p.getUniqueId())) {
 
-                        CaptchaGUI.openCaptcha(p);
+                        p.openInventory(e.getInventory());
                     }
 
                 },
-                1L
+                2L
         );
     }
 }
