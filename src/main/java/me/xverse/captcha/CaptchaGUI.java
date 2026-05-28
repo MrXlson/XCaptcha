@@ -13,6 +13,8 @@ public class CaptchaGUI {
 
     public static void openCaptcha(Player p) {
 
+        if(CaptchaListener.captchaPlayers.contains(p.getUniqueId())) return;
+
         FileConfiguration config = Main.getInstance().getConfig();
 
         int size = config.getInt("captcha.gui.size");
@@ -63,6 +65,30 @@ public class CaptchaGUI {
 
                 },
                 timeout * 20L
+        );
+
+        Bukkit.getScheduler().runTaskTimer(
+                Main.getInstance(),
+                new Runnable() {
+
+                    int time = timeout;
+
+                    @Override
+                    public void run() {
+
+                        if(!CaptchaListener.captchaPlayers.contains(p.getUniqueId())) return;
+
+                        if(time <= 0) return;
+
+                        p.sendActionBar(
+                                "§cKlikni na BEDROCK! §7" + time + "s"
+                        );
+
+                        time--;
+                    }
+                },
+                0L,
+                20L
         );
     }
 }
