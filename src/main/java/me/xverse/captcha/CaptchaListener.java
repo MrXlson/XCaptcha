@@ -42,9 +42,8 @@ public class CaptchaListener implements Listener {
 
         if(e.getCurrentItem().getType() == captcha) {
 
+            // NEJDŘÍV odstranit z captcha listu
             captchaPlayers.remove(p.getUniqueId());
-
-            p.closeInventory();
 
             int cooldownSeconds = config.getInt("captcha.success-cooldown");
 
@@ -58,7 +57,16 @@ public class CaptchaListener implements Listener {
                             .replace("&", "§")
             );
 
+            // AŽ POTOM zavřít inventory
+            Bukkit.getScheduler().runTaskLater(
+                    Main.getInstance(),
+                    p::closeInventory,
+                    1L
+            );
+
         } else {
+
+            captchaPlayers.remove(p.getUniqueId());
 
             Bukkit.getScheduler().runTaskLater(
                     Main.getInstance(),
@@ -76,18 +84,19 @@ public class CaptchaListener implements Listener {
 
         Player p = (Player) e.getPlayer();
 
-        if(captchaPlayers.contains(p.getUniqueId())) {
+        if(!captchaPlayers.contains(p.getUniqueId())) return;
 
-            FileConfiguration config = Main.getInstance().getConfig();
+        FileConfiguration config = Main.getInstance().getConfig();
 
-            Bukkit.getScheduler().runTaskLater(
-                    Main.getInstance(),
-                    () -> p.kickPlayer(
-                            config.getString("messages.close")
-                                    .replace("&", "§")
-                    ),
-                    1L
-            );
-        }
+        captchaPlayers.remove(p.getUniqueId());
+
+        Bukkit.getScheduler().runTaskLater(
+                Main.getInstance(),
+                () -> p.kickPlayer(
+                        config.getString("messages.close")
+                                .replace("&", "§")
+                ),
+                1L
+        );
     }
 }
