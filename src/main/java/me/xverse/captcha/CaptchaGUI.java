@@ -13,41 +13,49 @@ public class CaptchaGUI {
 
     public static void openCaptcha(Player p) {
 
-        if(CaptchaListener.captchaPlayers.contains(p.getUniqueId())) return;
+        if (CaptchaListener.captchaPlayers.contains(p.getUniqueId())) return;
 
         FileConfiguration config = Main.getInstance().getConfig();
 
-        int size = config.getInt("captcha.gui.size");
-
-        String title = config.getString("captcha.gui.title")
-                .replace("&", "§");
-
-        Inventory inv = Bukkit.createInventory(null, size, title);
-
-        Random random = new Random();
-
-        int slot = random.nextInt(size);
-
-        Material fill = Material.valueOf(
-                config.getString("captcha.gui.fill-material")
-        );
-
-        Material captcha = Material.valueOf(
-                config.getString("captcha.gui.captcha-material")
-        );
-
-        for(int i = 0; i < size; i++) {
-
-            if(i == slot) {
-                inv.setItem(i, new ItemStack(captcha));
-            } else {
-                inv.setItem(i, new ItemStack(fill));
-            }
-        }
-
         CaptchaListener.captchaPlayers.add(p.getUniqueId());
 
-        p.openInventory(inv);
+        Bukkit.getScheduler().runTaskLater(
+                Main.getInstance(),
+                () -> {
+
+                    int size = config.getInt("captcha.gui.size");
+
+                    String title = config.getString("captcha.gui.title")
+                            .replace("&", "§");
+
+                    Inventory inv = Bukkit.createInventory(null, size, title);
+
+                    Random random = new Random();
+
+                    int slot = random.nextInt(size);
+
+                    Material fill = Material.valueOf(
+                            config.getString("captcha.gui.fill-material")
+                    );
+
+                    Material captcha = Material.valueOf(
+                            config.getString("captcha.gui.captcha-material")
+                    );
+
+                    for (int i = 0; i < size; i++) {
+
+                        if (i == slot) {
+                            inv.setItem(i, new ItemStack(captcha));
+                        } else {
+                            inv.setItem(i, new ItemStack(fill));
+                        }
+                    }
+
+                    p.openInventory(inv);
+
+                },
+                2L
+        );
 
         int timeout = config.getInt("captcha.timeout-seconds");
 
@@ -55,7 +63,9 @@ public class CaptchaGUI {
                 Main.getInstance(),
                 () -> {
 
-                    if(CaptchaListener.captchaPlayers.contains(p.getUniqueId())) {
+                    if (CaptchaListener.captchaPlayers.contains(p.getUniqueId())) {
+
+                        CaptchaListener.captchaPlayers.remove(p.getUniqueId());
 
                         p.kickPlayer(
                                 config.getString("messages.timeout")
@@ -67,7 +77,7 @@ public class CaptchaGUI {
                 timeout * 20L
         );
 
-        for(int i = 0; i <= timeout; i++) {
+        for (int i = 0; i <= timeout; i++) {
 
             int timeLeft = timeout - i;
 
@@ -75,7 +85,7 @@ public class CaptchaGUI {
                     Main.getInstance(),
                     () -> {
 
-                        if(CaptchaListener.captchaPlayers.contains(p.getUniqueId())) {
+                        if (CaptchaListener.captchaPlayers.contains(p.getUniqueId())) {
 
                             p.sendActionBar(
                                     "§cKlikni na BEDROCK! §7" + timeLeft + "s"
