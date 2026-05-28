@@ -84,16 +84,16 @@ public class CaptchaListener implements Listener {
 
         if (!captchaPlayers.contains(p.getUniqueId())) return;
 
-        FileConfiguration config = Main.getInstance().getConfig();
-
-        captchaPlayers.remove(p.getUniqueId());
-
         Bukkit.getScheduler().runTaskLater(
                 Main.getInstance(),
-                () -> p.kickPlayer(
-                        config.getString("messages.close")
-                                .replace("&", "§")
-                ),
+                () -> {
+
+                    if (captchaPlayers.contains(p.getUniqueId())) {
+
+                        CaptchaGUI.openCaptcha(p);
+                    }
+
+                },
                 1L
         );
     }
