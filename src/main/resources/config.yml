@@ -1,0 +1,30 @@
+captcha:
+
+  enabled: true
+
+  enabled-worlds:
+    - world
+
+  disabled-worlds:
+    - spawn
+
+  min-blocks: 30
+  max-blocks: 80
+
+  gui:
+
+    size: 27
+
+    title: "&cKlikni na BEDROCK"
+
+    fill-material: STONE
+
+    captcha-material: BEDROCK
+
+messages:
+
+  success: "&aÚspěšně ověřeno!"
+
+  fail: "&cNeprošel jsi CAPTCHA testem!"
+
+  close: "&cZavřel jsi CAPTCHA!"
