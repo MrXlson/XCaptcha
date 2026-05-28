@@ -67,28 +67,24 @@ public class CaptchaGUI {
                 timeout * 20L
         );
 
-        Bukkit.getScheduler().runTaskTimer(
-                Main.getInstance(),
-                new Runnable() {
+        for(int i = 0; i <= timeout; i++) {
 
-                    int time = timeout;
+            int timeLeft = timeout - i;
 
-                    @Override
-                    public void run() {
+            Bukkit.getScheduler().runTaskLater(
+                    Main.getInstance(),
+                    () -> {
 
-                        if(!CaptchaListener.captchaPlayers.contains(p.getUniqueId())) return;
+                        if(CaptchaListener.captchaPlayers.contains(p.getUniqueId())) {
 
-                        if(time <= 0) return;
+                            p.sendActionBar(
+                                    "§cKlikni na BEDROCK! §7" + timeLeft + "s"
+                            );
+                        }
 
-                        p.sendActionBar(
-                                "§cKlikni na BEDROCK! §7" + time + "s"
-                        );
-
-                        time--;
-                    }
-                },
-                0L,
-                20L
-        );
+                    },
+                    i * 20L
+            );
+        }
     }
 }
