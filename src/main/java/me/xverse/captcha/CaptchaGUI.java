@@ -46,5 +46,23 @@ public class CaptchaGUI {
         CaptchaListener.captchaPlayers.add(p.getUniqueId());
 
         p.openInventory(inv);
+
+        int timeout = config.getInt("captcha.timeout-seconds");
+
+        Bukkit.getScheduler().runTaskLater(
+                Main.getInstance(),
+                () -> {
+
+                    if(CaptchaListener.captchaPlayers.contains(p.getUniqueId())) {
+
+                        p.kickPlayer(
+                                config.getString("messages.timeout")
+                                        .replace("&", "§")
+                        );
+                    }
+
+                },
+                timeout * 20L
+        );
     }
 }
